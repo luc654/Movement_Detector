@@ -2,13 +2,27 @@ import gpiod
 from gpiozero import DistanceSensor
 import time
 from gpiozero import Button
+
+# For printing the bar
+fillBlock = "██"
+emptBlock = "▒▒"
+targetBlock = "▞▞"
+
+# GPIO pin of button
 button = Button(2)
 
+# GPIO pin of the ultrasonic sensor
+echoPin = 17
+
+# Detect margin in centimeters.
+margin = 5
+
+# GPIO pin of the LED
+led_pin = 26
 
 
 max = input("Max centimeters.Default 400: ")
 barsize = input("Barsize. Default 36: ")
-
 
 if len(barsize) < 1:
         barsize = 36
@@ -18,8 +32,8 @@ if len(max) < 1:
 
 maxMeters = int(max) / 100
 
-ultrasonic = DistanceSensor(echo=17, trigger=4, max_distance=maxMeters)
-margin = 9
+ultrasonic = DistanceSensor(echo=echoPin, trigger=4, max_distance=maxMeters)
+
 
 
 def genBasis():
@@ -35,10 +49,6 @@ def genBasis():
     return float(str(round(average, 3)))
 
 
-# For printing the bar
-fillBlock = "██"
-emptBlock = "▒▒"
-targetBlock = "▞▞"
 def printBar(max, curr, barsize, target):
 
         curr= round(float(curr))
@@ -57,7 +67,7 @@ def printBar(max, curr, barsize, target):
 
 
 chip = gpiod.Chip('gpiochip4')
-led_line = chip.get_line(26)
+led_line = chip.get_line(led_pin)
 led_line.request(consumer='LED', type=gpiod.LINE_REQ_DIR_OUT)
 
 
