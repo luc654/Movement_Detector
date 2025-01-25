@@ -30,8 +30,18 @@ if len(barsize) < 1:
 if len(max) < 1:
         max = 400
 
-maxMeters = int(max) / 100
 
+if max == "smart":
+    ultrasonic = DistanceSensor(echo=echoPin, trigger=4, max_distance=4)
+    distance = ultrasonic.distance
+    maxMeters = distance
+    max = maxMeters * 100
+    ultrasonic.close()
+else:
+    maxMeters = int(max) / 100
+
+
+print(maxMeters)
 ultrasonic = DistanceSensor(echo=echoPin, trigger=4, max_distance=maxMeters)
 
 
